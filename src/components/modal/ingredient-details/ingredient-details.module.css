@@ -1,0 +1,19 @@
+.ingredientModal {
+    display: flex;
+    justify-content: center;
+}
+
+.ingredientHeader {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.ingredientNutrition {
+    display: flex;
+    padding-top: 32px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 60px;
+}

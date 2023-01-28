@@ -1,0 +1,13 @@
+.orderModal {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 120px;
+}
+
+.orderStatus {
+    padding-top: 36px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    flex-wrap: wrap;
+}
