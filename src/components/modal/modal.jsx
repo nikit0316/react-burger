@@ -2,6 +2,8 @@ import React, {useEffect} from 'react';
 import styles from './modal.module.css'
 import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from "prop-types";
+import ModalOverlay from "./modal-overlay/modal-overlay";
+import ReactDom from "react-dom";
 
 const modalRoot = document.getElementById('root-modals')
 const Modal = (props) => {
@@ -15,14 +17,19 @@ const Modal = (props) => {
         window.addEventListener('keydown', close)
         return () => window.removeEventListener('keydown', close)
     },[])
-    return (
-        <div className={styles.modal}>
-            <div className="pt-15 pl-10 pr-10" style={{ display: 'flex', justifyContent: 'space-between'}}>
-                {header && <p className="text text_type_main-large">{header}</p>}
-                <CloseIcon type="primary" onClick={onClose}/>
+    return ReactDom.createPortal(
+        <>
+        <ModalOverlay onClose={onClose}>
+        </ModalOverlay>
+            <div className={styles.modal}>
+                <div className="pt-15 pl-10 pr-10" style={{ display: 'flex', justifyContent: 'space-between'}}>
+                    {header && <p className="text text_type_main-large">{header}</p>}
+                    <CloseIcon type="primary" onClick={onClose}/>
+                </div>
+                {children}
             </div>
-            {children}
-        </div>
+        </>,
+        modalRoot
     )
 }
 

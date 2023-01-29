@@ -7,28 +7,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientCard from './ingredient-card/ingredient-card';
 import './../../App.css';
-
-const element = PropTypes.shape({
-  id: PropTypes.number.isRequired,
-  user: PropTypes.string.isRequired,
-  replyTo: PropTypes.number,
-  text: PropTypes.string.isRequired
-});
-
-const elementPropTypes = PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-    image_large: PropTypes.string.isRequired,
-    image_mobile: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    proteins: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired,
-})
-
-
+import {elementPropTypes} from "../../utils/prop-types";
 const BurgerIngredients = (props) => {
     const [current, setCurrent] = useState("bun");
 
@@ -51,21 +30,21 @@ const BurgerIngredients = (props) => {
             <div className={styles.ingredients}>
               {props.data.map((element) => {
                 if (element.type === "bun")
-                  return <IngredientCard element={element} />;
+                  return <IngredientCard key={element._id} element={element} />;
               })}
             </div>
             <p className="text text_type_main-medium">Соусы</p>
             <div className={styles.ingredients}>
               {props.data.map((element) => {
                 if (element.type === "sauce")
-                  return <IngredientCard element={element} />;
+                  return <IngredientCard key={element._id} element={element} />;
               })}
             </div>
             <p className="text text_type_main-medium">Начинки</p>
             <div className={styles.ingredients}>
               {props.data.map((element) => {
                 if (element.type === "main")
-                  return <IngredientCard element={element} />;
+                  return <IngredientCard key={element._id} element={element} />;
               })}
             </div>
         </div>

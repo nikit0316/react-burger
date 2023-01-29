@@ -6,22 +6,11 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import "simplebar-react/dist/simplebar.min.css";
 import {ReactComponent as Currency} from '../../Subtract.svg'
-import ModalOverlay from "../modal/modal-overlay/modal-overlay";
 import OrderDetails from "../modal/order-details/order-details";
 import PropTypes from "prop-types";
+import Modal from "../modal/modal";
+import {elementPropTypes} from "../../utils/prop-types";
 
-const elementPropTypes = PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-    image_large: PropTypes.string.isRequired,
-    image_mobile: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    proteins: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired,
-})
 const BurgerConstructor = (props) => {
     const [orderVisible, setOrderVisible] = useState(false);
     const handleOpenOrderModal = () => {
@@ -32,22 +21,20 @@ const BurgerConstructor = (props) => {
     }
 
     const orderModal = (
-        <ModalOverlay onClose={handleCloseOrderModal}>
+        <Modal onClose={handleCloseOrderModal}>
             <OrderDetails />
-        </ModalOverlay>
+        </Modal>
     );
 
     return (
       <div style={{ display: "flex", flexDirection: "column", maxHeight: '800px' }}>
-          <div className={styles.constructorCard}>
-            <DragIcon />
+          <div className={styles.constructorCard + ' ' + styles.baseElement}>
             <ConstructorElement
               type="top"
               isLocked={true}
               text="Краторная булка N-200i (верх)"
               price={200}
               thumbnail={props.data[0].image}
-              extraClass={styles.cardInfo}
             />
           </div>
           <div className={styles.constructorCard}>
@@ -58,8 +45,7 @@ const BurgerConstructor = (props) => {
               thumbnail={props.data[0].image}
             />
           </div>
-          <div className={styles.constructorCard}>
-            <DragIcon />
+          <div className={styles.constructorCard + ' ' + styles.baseElement}>
             <ConstructorElement
               type="bottom"
               isLocked={true}

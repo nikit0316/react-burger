@@ -4,22 +4,10 @@ import {
   Counter
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import React, {useState} from "react";
-import ModalOverlay from "../../modal/modal-overlay/modal-overlay";
 import IngredientDetails from "../../modal/ingredient-details/ingredient-details";
 import PropTypes from "prop-types";
-
-const elementPropTypes = PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-    image_large: PropTypes.string.isRequired,
-    image_mobile: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    proteins: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired,
-})
+import Modal from "../../modal/modal";
+import {elementPropTypes} from "../../../utils/prop-types";
 const IngredientCard = (props) => {
     const [ingredientVisible, setIngredientVisible] = useState(false);
 
@@ -32,9 +20,9 @@ const IngredientCard = (props) => {
 
 
     const ingredientModal = (
-        <ModalOverlay header='Детали ингридиента' onClose={handleCloseIngredientModal}>
+        <Modal header='Детали ингридиента' onClose={handleCloseIngredientModal}>
             <IngredientDetails element={props.element}/>
-        </ModalOverlay>
+        </Modal>
     );
 
     return (
@@ -58,6 +46,6 @@ const IngredientCard = (props) => {
 }
 
 IngredientCard.propTypes = {
-    props: PropTypes.instanceOf(elementPropTypes)
+    element: elementPropTypes
 }
 export default IngredientCard;
