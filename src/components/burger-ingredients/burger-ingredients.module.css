@@ -1,0 +1,25 @@
+.ingredientsColumn {
+    max-width: 600px;
+    max-height: 800px;
+    overflow: auto;
+}
+
+.tab {
+    display: flex;
+}
+.listIngredients {
+    max-width: 600px;
+    max-height: 600px;
+    overflow: auto;
+}
+
+.ingredients {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.simplebarTrack .simplebarVertical {
+    background-color: orange !important;
+}

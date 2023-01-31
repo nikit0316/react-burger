@@ -1,0 +1,27 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.menuItemBlock {
+    display: flex;
+    flex-direction: row
+}
+
+.menuItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 8px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+
+}
+
+.logo {
+    position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
