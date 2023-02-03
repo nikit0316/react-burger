@@ -6,7 +6,6 @@ import {
   Tab
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientCard from './ingredient-card/ingredient-card';
-import './../../App.css';
 import {elementPropTypes} from "../../utils/prop-types";
 import {BurgerContext} from "../../services/burger-context";
 const BurgerIngredients = () => {

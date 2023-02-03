@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useReducer, useState} from 'react'
 import styles from './burger-construcor.module.css'
 import {
     Button,
-    ConstructorElement, CurrencyIcon, DragIcon
+    ConstructorElement, DragIcon
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import "simplebar-react/dist/simplebar.min.css";
 import {ReactComponent as Currency} from '../../Subtract.svg'
@@ -11,6 +11,7 @@ import PropTypes from "prop-types";
 import Modal from "../modal/modal";
 import {elementPropTypes} from "../../utils/prop-types";
 import {BurgerContext} from "../../services/burger-context";
+import {BURGER_API_URL} from "../../utils/data";
 
 const ingredientsInitialState = {
     ingredients: [],
@@ -35,7 +36,7 @@ const BurgerConstructor = () => {
     const [ingredientsState, ingredientsDispatcher] = useReducer(reducer, ingredientsInitialState, undefined)
     const {data} = useContext(BurgerContext)
     const handleOpenOrderModal = () => {
-        postData('https://norma.nomoreparties.space/api/orders', {ingredients: ingredientsState.ingredients})
+        postData(`${BURGER_API_URL}/orders`, {ingredients: ingredientsState.ingredients.map((ingredient) => ingredient._id)})
 
     }
 
@@ -47,8 +48,14 @@ const BurgerConstructor = () => {
             },
             body: JSON.stringify(data)
         })
-            .then((res) => res.json())
-            .then((data) => setOrderInfo(data))
+        if (!response.ok) {
+            await Promise.reject(response)
+            throw new Error('Ответ сети был не ok.');
+        } else {
+            const json = await response.json();
+            const jsonData = json;
+            setOrderInfo(jsonData);
+        }
     }
     const handleCloseOrderModal = () => {
         setOrderVisible(false)
@@ -62,13 +69,17 @@ const BurgerConstructor = () => {
         else return ingredient;
     }
 
+    const bun = data[0];
+
     useEffect(() => {
+        ingredientsDispatcher({type: 'add', payload: bun})
         for (let i = 0; i < 3; i++)
         {
             ingredientsDispatcher({type: 'add', payload: getRandomIngredient()})
         }
+        ingredientsDispatcher({type: 'add', payload: bun})
         return () => ingredientsDispatcher({type: 'reset'})
-    },[])
+    },[bun])
 
     useEffect(() => {
         if (orderInfo !== undefined) {
@@ -82,39 +93,28 @@ const BurgerConstructor = () => {
         </Modal>
     );
 
-    const bun = data[0];
-
     return (
       <div style={{ display: "flex", flexDirection: "column", maxHeight: '800px' }}>
-          <div className={styles.constructorCard + ' ' + styles.baseElement}>
-            <ConstructorElement
-              type="top"
-              isLocked={true}
-              text={bun.name + ' (верх)'}
-              price={bun.price}
-              thumbnail={bun.image}
-            />
-          </div>
           <div>
-              {ingredientsState.ingredients.map((ingredient =>
-          <div className={styles.constructorCard} key={ingredient._id}>
+              {ingredientsState.ingredients.map(((ingredient, i) =>
+                      ingredient.type !== 'bun' ?
+          <div className={styles.constructorCard} key={ingredient._id + i}>
             <DragIcon />
             <ConstructorElement
               text={ingredient.name}
               price={ingredient.price}
               thumbnail={ingredient.image}
             />
-          </div>
+          </div> : <div key={ingredient._id + i} className={styles.constructorCard + ' ' + styles.baseElement}>
+                              <ConstructorElement
+                                  type={i > 0 ? 'bottom' : 'top'}
+                                  isLocked={true}
+                                  text={bun.name + ' (верх)'}
+                                  price={bun.price}
+                                  thumbnail={bun.image}
+                              />
+                          </div>
               ))}
-          </div>
-          <div className={styles.constructorCard + ' ' + styles.baseElement}>
-            <ConstructorElement
-              type="bottom"
-              isLocked={true}
-              text={bun.name + ' (низ)'}
-              price={bun.price}
-              thumbnail={bun.image}
-            />
           </div>
           <div className={styles.constructorOrder} style={{alignSelf: "flex-end"}}>
               <p className="text text_type_digits-medium" style={{alignSelf: "center"}}>{ingredientsState.sum}</p>
