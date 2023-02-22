@@ -1,19 +1,25 @@
-import React, {useContext, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from "./burger-ingredients.module.css";
 import "simplebar-react/dist/simplebar.min.css";
-import PropTypes from "prop-types"
+import { useGetIngredientsQuery } from "../../services/reducers/ingredientAPI";
+
 import {
   Tab
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientCard from './ingredient-card/ingredient-card';
-import {elementPropTypes} from "../../utils/prop-types";
-import {BurgerContext} from "../../services/burger-context";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchIngredients} from "../../services/reducers/orderSlice";
 const BurgerIngredients = () => {
     const [current, setCurrent] = useState("bun");
-    const {data} = useContext(BurgerContext)
+    const {data: ingredients,error,isLoading} = useGetIngredientsQuery('');
 
     return (
-      <div>
+        <>
+            {/*{ingredients.loading && <div>Loading...</div>}*/}
+            {/*{!ingredients.loading && data.length &&*/}
+            {isLoading && <div>Loading...</div>}
+            {!isLoading && ingredients &&
+            <div>
         <p className="text text_type_main-large pt-10 pb-5">Соберите бургер</p>
         <div className={styles.tab}>
           <Tab value="bun" active={current === "bun"} onClick={setCurrent}>
@@ -29,31 +35,33 @@ const BurgerIngredients = () => {
         <div className={styles.listIngredients + ' custom-scroll'}>
             <p className="text text_type_main-medium pt-10">Булки</p>
             <div className={styles.ingredients}>
-              {data.map((element) => {
+              {ingredients.data.map((element) => {
                 if (element.type === "bun")
                   return <IngredientCard key={element._id} element={element} />;
               })}
             </div>
             <p className="text text_type_main-medium">Соусы</p>
             <div className={styles.ingredients}>
-              {data.map((element) => {
+              {ingredients.data.map((element) => {
                 if (element.type === "sauce")
                   return <IngredientCard key={element._id} element={element} />;
               })}
             </div>
             <p className="text text_type_main-medium">Начинки</p>
             <div className={styles.ingredients}>
-              {data.map((element) => {
+              {ingredients.data.map((element) => {
                 if (element.type === "main")
                   return <IngredientCard key={element._id} element={element} />;
               })}
             </div>
         </div>
       </div>
+            }
+        </>
     );
 }
 
-BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(elementPropTypes).isRequired
-}
+// BurgerIngredients.propTypes = {
+//     data: PropTypes.arrayOf(elementPropTypes).isRequired
+// }
 export default BurgerIngredients
