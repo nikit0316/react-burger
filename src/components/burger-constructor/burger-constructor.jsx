@@ -26,11 +26,15 @@ const BurgerConstructor = () => {
     const {data: ingredients,error,isLoading} = useGetIngredientsQuery('');
 
     useEffect(() => {
+        console.log('cart array: ')
         console.log(cart)
-        console.log(ingredients)
         if (ingredients && !isLoading) {
-            console.log('sup')
-            console.log(ingredients.data.filter(ingredient => cart.includes(ingredient._id)))
+            console.log('Filter result')
+            //console.log(ingredients.data.filter(ingredient => cart.includes(ingredient._id)))
+            console.log(cart
+                .map(id => ingredients.data.find(x => x._id === id))
+                .map(ingredient => console.log(ingredient))
+            )
         }
     },[cart])
 
@@ -66,10 +70,13 @@ const BurgerConstructor = () => {
         <>
             <div style={{ display: "flex", flexDirection: "column", maxHeight: '800px' }} ref={dropRef}>
                 {isOver && <div>Кидай сюда</div>}
-                {isLoading && ingredients &&
+                {!isLoading && ingredients &&
           <div>
-              {ingredients.data
-                  .filter(ingredient => cart.includes(ingredient._id))
+              {/*{ingredients.data*/}
+              {/*    .filter(ingredient => cart.includes(ingredient._id))*/}
+              {/*    .map(((ingredient, i) =>*/}
+              {cart
+                  .map(id => ingredients.data.find(x => x._id === id))
                   .map(((ingredient, i) =>
                       ingredient.type !== 'bun' ?
           <div className={styles.constructorCard} key={ingredient._id + i}>
@@ -83,9 +90,9 @@ const BurgerConstructor = () => {
                               <ConstructorElement
                                   type={i > 0 ? 'bottom' : 'top'}
                                   isLocked={true}
-                                  text={cart.name + ' (верх)'}
-                                  price={cart.price}
-                                  thumbnail={cart.image}
+                                  text={ingredient.name + (i <= 0 ? '(верх)' : '(низ)')}
+                                  price={ingredient.price}
+                                  thumbnail={ingredient.image}
                               />
                           </div>
               ))}

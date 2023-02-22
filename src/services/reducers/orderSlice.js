@@ -29,9 +29,6 @@ const orderSlice = createSlice({
         addIngredient: (state, action) => {
             console.log(action.payload)
             state.cart.push(action.payload)
-        },
-        addNumber: (state) => {
-            state.number += 1;
         }
     },
 
