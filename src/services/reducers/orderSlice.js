@@ -28,7 +28,12 @@ const orderSlice = createSlice({
     reducers: {
         addIngredient: (state, action) => {
             console.log(action.payload)
-            state.cart.push(action.payload)
+            if (action.payload.type === 'bun') {
+                state.cart.unshift(action.payload._id)
+                state.cart.push(action.payload._id)
+            } else {
+                state.cart.splice(1, 0, action.payload._id)
+            }
         }
     },
 

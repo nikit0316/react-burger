@@ -10,10 +10,10 @@ import {elementPropTypes} from "../../../utils/prop-types";
 import {useDrag} from "react-dnd";
 const IngredientCard = (props) => {
     const [ingredientVisible, setIngredientVisible] = useState(false);
-    const id = props.element._id;
+    const element = props.element;
     const [{ isDragging }, dragRef] = useDrag({
         type: 'ingredient',
-        item: { id },
+        item: { element },
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         })

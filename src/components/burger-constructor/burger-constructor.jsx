@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useReducer, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from './burger-construcor.module.css'
 import {
     Button,
@@ -9,38 +9,45 @@ import {ReactComponent as Currency} from '../../Subtract.svg'
 import OrderDetails from "../modal/order-details/order-details";
 import Modal from "../modal/modal";
 import {useDispatch, useSelector} from "react-redux";
-import {useDrop} from "react-dnd";
-import {addIngredient, addNumber} from "../../services/reducers/orderSlice";
+import {useDrag, useDrop} from "react-dnd";
+import {addIngredient} from "../../services/reducers/orderSlice";
 import {useGetIngredientsQuery} from "../../services/reducers/ingredientAPI";
 
 const BurgerConstructor = () => {
     const [orderVisible, setOrderVisible] = useState(false);
     const [orderInfo, setOrderInfo] = useState();
-    const [sum, useSum] = useState(0);
+    const [sum, setSum] = useState(0);
     const dispatch = useDispatch();
-    const {cart, number} = useSelector(state => state.order)
+    const { cart } = useSelector(state => state.order)
     const handleOpenOrderModal = () => {
         // postData(`${BURGER_API_URL}/orders`, {ingredients: ingredientsState.ingredients.map((ingredient) => ingredient._id)})
     }
 
-    const {data: ingredients,error,isLoading} = useGetIngredientsQuery('');
+    const {data: ingredients, error, isLoading} = useGetIngredientsQuery('');
+
+    const [{ isDragging }, dragRef] = useDrag({
+        type: 'item',
+        item: { sum },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    })
 
     useEffect(() => {
         console.log('cart array: ')
         console.log(cart)
         if (ingredients && !isLoading) {
             console.log('Filter result')
-            //console.log(ingredients.data.filter(ingredient => cart.includes(ingredient._id)))
-            console.log(cart
+            setSum(cart
                 .map(id => ingredients.data.find(x => x._id === id))
-                .map(ingredient => console.log(ingredient))
-            )
+                .reduce((total, ingredient, i) => i === 0 && ingredient.type === 'bun' ? total : total + ingredient.price, 0
+            ))
         }
     },[cart])
 
     const [{ isOver }, dropRef] = useDrop({
         accept: 'ingredient',
-        drop: (item) => dispatch(addIngredient(item.id)),
+        drop: (item) => dispatch(addIngredient(item.element)),
         collect: (monitor) => ({
             isOver: monitor.isOver()
         })
@@ -72,9 +79,6 @@ const BurgerConstructor = () => {
                 {isOver && <div>Кидай сюда</div>}
                 {!isLoading && ingredients &&
           <div>
-              {/*{ingredients.data*/}
-              {/*    .filter(ingredient => cart.includes(ingredient._id))*/}
-              {/*    .map(((ingredient, i) =>*/}
               {cart
                   .map(id => ingredients.data.find(x => x._id === id))
                   .map(((ingredient, i) =>
