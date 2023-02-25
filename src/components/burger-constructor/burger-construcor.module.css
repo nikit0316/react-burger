@@ -10,6 +10,12 @@
     margin-right: 8px;
 }
 
+.ingredientList {
+    max-width: 600px;
+    max-height: 570px;
+    overflow: auto;
+}
+
 .constructorOrder {
     display: flex;
     flex-direction: row;

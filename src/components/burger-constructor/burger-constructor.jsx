@@ -10,7 +10,7 @@ import OrderDetails from "../modal/order-details/order-details";
 import Modal from "../modal/modal";
 import {useDispatch, useSelector} from "react-redux";
 import {useDrag, useDrop} from "react-dnd";
-import {addIngredient} from "../../services/reducers/orderSlice";
+import {addIngredient, deleteIngredient} from "../../services/reducers/orderSlice";
 import {useGetIngredientsQuery} from "../../services/reducers/ingredientAPI";
 
 const BurgerConstructor = () => {
@@ -19,6 +19,7 @@ const BurgerConstructor = () => {
     const [sum, setSum] = useState(0);
     const dispatch = useDispatch();
     const { cart } = useSelector(state => state.order)
+
     const handleOpenOrderModal = () => {
         // postData(`${BURGER_API_URL}/orders`, {ingredients: ingredientsState.ingredients.map((ingredient) => ingredient._id)})
     }
@@ -34,12 +35,9 @@ const BurgerConstructor = () => {
     })
 
     useEffect(() => {
-        console.log('cart array: ')
-        console.log(cart)
         if (ingredients && !isLoading) {
-            console.log('Filter result')
             setSum(cart
-                .map(id => ingredients.data.find(x => x._id === id))
+                .map(ingredient => ingredients.data.find(x => x._id === ingredient._id))
                 .reduce((total, ingredient, i) => i === 0 && ingredient.type === 'bun' ? total : total + ingredient.price, 0
             ))
         }
@@ -54,12 +52,14 @@ const BurgerConstructor = () => {
     })
 
     async function postData(url = '', data = {}) {
-
     }
     const handleCloseOrderModal = () => {
         setOrderVisible(false)
     }
 
+    const deletesIngredient = (id) => {
+        dispatch(deleteIngredient(id))
+    }
 
     useEffect(() => {
         if (orderInfo !== undefined) {
@@ -78,9 +78,9 @@ const BurgerConstructor = () => {
             <div style={{ display: "flex", flexDirection: "column", maxHeight: '800px' }} ref={dropRef}>
                 {isOver && <div>Кидай сюда</div>}
                 {!isLoading && ingredients &&
-          <div>
+          <div className={styles.ingredientList + ' custom-scroll' }>
               {cart
-                  .map(id => ingredients.data.find(x => x._id === id))
+                  .map(ingredient => ingredients.data.find(x => x._id === ingredient._id))
                   .map(((ingredient, i) =>
                       ingredient.type !== 'bun' ?
           <div className={styles.constructorCard} key={ingredient._id + i}>
@@ -89,6 +89,7 @@ const BurgerConstructor = () => {
               text={ingredient.name}
               price={ingredient.price}
               thumbnail={ingredient.image}
+              handleClose={(e) => deletesIngredient(ingredient._id, e)}
             />
           </div> : <div key={ingredient._id + i} className={styles.constructorCard + ' ' + styles.baseElement}>
                               <ConstructorElement

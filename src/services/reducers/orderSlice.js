@@ -29,11 +29,23 @@ const orderSlice = createSlice({
         addIngredient: (state, action) => {
             console.log(action.payload)
             if (action.payload.type === 'bun') {
-                state.cart.unshift(action.payload._id)
-                state.cart.push(action.payload._id)
+                if (state.cart[0] !== undefined && state.cart[0].type === 'bun')
+                {
+                    state.cart[0] = action.payload;
+                    state.cart.pop();
+                    state.cart.push(action.payload);
+                } else {
+                    state.cart.unshift(action.payload);
+                    state.cart.push(action.payload);
+                }
             } else {
-                state.cart.splice(1, 0, action.payload._id)
+                state.cart.splice(1, 0, action.payload)
             }
+        },
+        deleteIngredient: (state, action) => {
+            console.log(action.payload);
+            let index = state.cart.findIndex((x) => x._id === action.payload)
+            state.cart.splice(index, 1)
         }
     },
 
@@ -52,5 +64,5 @@ const orderSlice = createSlice({
     }*/
 });
 
-export const { addIngredient, addNumber } = orderSlice.actions;
+export const { addIngredient, deleteIngredient } = orderSlice.actions;
 export default orderSlice.reducer;

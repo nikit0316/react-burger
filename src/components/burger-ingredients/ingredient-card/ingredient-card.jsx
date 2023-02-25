@@ -34,7 +34,7 @@ const IngredientCard = (props) => {
     return (
         <>
       <div className={styles.ingredientCard} onClick={handleOpenIngredientModal} ref={dragRef}>
-        <Counter />
+        <Counter count={props.count}/>
         <img src={props.element.image} alt="oops" ></img>
         <div className={styles.price}>
           <p className="text text_type_main-large pt-1 pb-1 pr-2">

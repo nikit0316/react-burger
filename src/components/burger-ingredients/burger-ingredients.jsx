@@ -7,11 +7,11 @@ import {
   Tab
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientCard from './ingredient-card/ingredient-card';
-import {useDispatch, useSelector} from "react-redux";
-import {fetchIngredients} from "../../services/reducers/orderSlice";
+import {useSelector} from "react-redux";
 const BurgerIngredients = () => {
     const [current, setCurrent] = useState("bun");
     const {data: ingredients,error,isLoading} = useGetIngredientsQuery('');
+    const { cart } = useSelector(state => state.order)
 
     return (
         <>
@@ -37,21 +37,21 @@ const BurgerIngredients = () => {
             <div className={styles.ingredients}>
               {ingredients.data.map((element) => {
                 if (element.type === "bun")
-                  return <IngredientCard key={element._id} element={element} />;
+                  return <IngredientCard key={element._id} element={element} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
             <p className="text text_type_main-medium">Соусы</p>
             <div className={styles.ingredients}>
               {ingredients.data.map((element) => {
                 if (element.type === "sauce")
-                  return <IngredientCard key={element._id} element={element} />;
+                  return <IngredientCard key={element._id} element={element} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
             <p className="text text_type_main-medium">Начинки</p>
             <div className={styles.ingredients}>
               {ingredients.data.map((element) => {
                 if (element.type === "main")
-                  return <IngredientCard key={element._id} element={element} />;
+                  return <IngredientCard key={element._id} element={element} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
         </div>
@@ -60,8 +60,4 @@ const BurgerIngredients = () => {
         </>
     );
 }
-
-// BurgerIngredients.propTypes = {
-//     data: PropTypes.arrayOf(elementPropTypes).isRequired
-// }
 export default BurgerIngredients

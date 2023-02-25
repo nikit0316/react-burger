@@ -1,9 +1,3 @@
-.ingredientsColumn {
-    max-width: 600px;
-    max-height: 800px;
-    overflow: auto;
-}
-
 .tab {
     display: flex;
 }
