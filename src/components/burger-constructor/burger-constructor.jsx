@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import styles from './burger-construcor.module.css'
 import {
     Button,
@@ -10,8 +10,9 @@ import OrderDetails from "../modal/order-details/order-details";
 import Modal from "../modal/modal";
 import {useDispatch, useSelector} from "react-redux";
 import {useDrag, useDrop} from "react-dnd";
-import {addIngredient, deleteIngredient} from "../../services/reducers/orderSlice";
+import {addIngredient, deleteIngredient, reorderIngedients} from "../../services/reducers/orderSlice";
 import {useGetIngredientsQuery} from "../../services/reducers/ingredientAPI";
+import ConstructorCard from "./constructor-card/constructor-card";
 
 const BurgerConstructor = () => {
     const [orderVisible, setOrderVisible] = useState(false);
@@ -25,14 +26,6 @@ const BurgerConstructor = () => {
     }
 
     const {data: ingredients, error, isLoading} = useGetIngredientsQuery('');
-
-    const [{ isDragging }, dragRef] = useDrag({
-        type: 'item',
-        item: { sum },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
-    })
 
     useEffect(() => {
         if (ingredients && !isLoading) {
@@ -73,6 +66,18 @@ const BurgerConstructor = () => {
         </Modal>
     );
 
+    const moveCard = useCallback((dragIndex, hoverIndex) => {
+        dispatch(reorderIngedients({dragIndex, hoverIndex}))
+        // setCards((prevCards) =>
+        //     update(prevCards, {
+        //         $splice: [
+        //             [dragIndex, 1],
+        //             [hoverIndex, 0, prevCards[dragIndex]],
+        //         ],
+        //     }),
+        // )
+    }, [cart])
+
     return (
         <>
             <div style={{ display: "flex", flexDirection: "column", maxHeight: '800px' }} ref={dropRef}>
@@ -83,13 +88,13 @@ const BurgerConstructor = () => {
                   .map(ingredient => ingredients.data.find(x => x._id === ingredient._id))
                   .map(((ingredient, i) =>
                       ingredient.type !== 'bun' ?
-          <div className={styles.constructorCard} key={ingredient._id + i}>
-            <DragIcon />
-            <ConstructorElement
-              text={ingredient.name}
-              price={ingredient.price}
-              thumbnail={ingredient.image}
+          <div key={ingredient._id + i}>
+            <ConstructorCard
+              element={ingredient}
+              id={ingredient._id}
               handleClose={(e) => deletesIngredient(ingredient._id, e)}
+              index={i}
+              moveCard={moveCard}
             />
           </div> : <div key={ingredient._id + i} className={styles.constructorCard + ' ' + styles.baseElement}>
                               <ConstructorElement

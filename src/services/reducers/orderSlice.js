@@ -27,7 +27,6 @@ const orderSlice = createSlice({
     initialState,
     reducers: {
         addIngredient: (state, action) => {
-            console.log(action.payload)
             if (action.payload.type === 'bun') {
                 if (state.cart[0] !== undefined && state.cart[0].type === 'bun')
                 {
@@ -43,10 +42,12 @@ const orderSlice = createSlice({
             }
         },
         deleteIngredient: (state, action) => {
-            console.log(action.payload);
             let index = state.cart.findIndex((x) => x._id === action.payload)
             state.cart.splice(index, 1)
-        }
+        },
+        reorderIngedients: (state, action) => {
+            state.cart.splice(action.payload.dragIndex, 0, state.cart.splice(action.payload.hoverIndex, 1)[0]);
+        },
     },
 
     /*extraReducers: builder => {
@@ -64,5 +65,5 @@ const orderSlice = createSlice({
     }*/
 });
 
-export const { addIngredient, deleteIngredient } = orderSlice.actions;
+export const { addIngredient, deleteIngredient, reorderIngedients } = orderSlice.actions;
 export default orderSlice.reducer;
