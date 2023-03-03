@@ -11,7 +11,7 @@ import Modal from "../modal/modal";
 import {useDispatch, useSelector} from "react-redux";
 import {useDrag, useDrop} from "react-dnd";
 import {addIngredient, deleteIngredient, reorderIngedients} from "../../services/reducers/orderSlice";
-import {useGetIngredientsQuery} from "../../services/reducers/ingredientAPI";
+import {useGetIngredientsQuery, useAddOrderMutation} from "../../services/reducers/ingredientAPI";
 import ConstructorCard from "./constructor-card/constructor-card";
 
 const BurgerConstructor = () => {
@@ -20,9 +20,17 @@ const BurgerConstructor = () => {
     const [sum, setSum] = useState(0);
     const dispatch = useDispatch();
     const { cart } = useSelector(state => state.order)
+    const [addNewOrder, response] = useAddOrderMutation();
 
-    const handleOpenOrderModal = () => {
+    const handleOpenOrderModal = async () => {
         // postData(`${BURGER_API_URL}/orders`, {ingredients: ingredientsState.ingredients.map((ingredient) => ingredient._id)})
+        const result = await addNewOrder({ingredients: cart.map(ingredient => ingredient._id)})
+            .unwrap()
+            .catch((error) => {
+                console.log(error)
+            })
+        setOrderInfo(result)
+        setOrderVisible(true)
     }
 
     const {data: ingredients, error, isLoading} = useGetIngredientsQuery('');

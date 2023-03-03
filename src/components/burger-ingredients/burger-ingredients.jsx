@@ -10,8 +10,29 @@ import IngredientCard from './ingredient-card/ingredient-card';
 import {useSelector} from "react-redux";
 const BurgerIngredients = () => {
     const [current, setCurrent] = useState("bun");
+    const [tabValue, setTabValue] = useState('bun')
     const {data: ingredients,error,isLoading} = useGetIngredientsQuery('');
     const { cart } = useSelector(state => state.order)
+
+    useEffect(() => {
+        if (!isLoading) {
+            const box = document.querySelector('.custom-scroll');
+            box.addEventListener("scroll", event => {
+                console.log(box.scrollTop)
+                if (box.scrollTop > 300 && box.scrollTop < 810 && tabValue !== 'sauce') {
+                    setTabValue('sauce')
+                    console.log('sauce')
+                }
+                else if (box.scrollTop > 810 && tabValue !== 'main') {
+                    setTabValue('main')
+                    console.log('main')
+                } else if (tabValue !== 'bun'){
+                    setTabValue('bun')
+                    console.log('bun')
+                }
+            })
+        }
+    },[isLoading])
 
     return (
         <>
@@ -22,13 +43,13 @@ const BurgerIngredients = () => {
             <div>
         <p className="text text_type_main-large pt-10 pb-5">Соберите бургер</p>
         <div className={styles.tab}>
-          <Tab value="bun" active={current === "bun"} onClick={setCurrent}>
+          <Tab value="bun" active={tabValue === "bun"} onClick={setCurrent}>
             Булки
           </Tab>
-          <Tab value="sauce" active={current === "sauce"} onClick={setCurrent}>
+          <Tab value="sauce" active={tabValue === "sauce"} onClick={setCurrent}>
             Соусы
           </Tab>
-          <Tab value="main" active={current === "main"} onClick={setCurrent}>
+          <Tab value="main" active={tabValue === "main"} onClick={setCurrent}>
             Начинки
           </Tab>
         </div>

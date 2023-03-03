@@ -9,15 +9,18 @@ export const ingredientAPI = createApi({
             getIngredients: builder.query({
                 query: (name) => '/ingredients',
             }),
-            createOrder: builder.mutation({
+            addOrder: builder.mutation({
             query: (ingredients) => ({
                 url: `/orders`,
                 method: 'POST',
-                body: ingredients
+                body: ingredients,
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
             }),
             invalidatesTags: ['Post']
         }),
     }),
 })
 
-export const { useGetIngredientsQuery } = ingredientAPI;
+export const { useGetIngredientsQuery, useAddOrderMutation } = ingredientAPI;
