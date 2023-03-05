@@ -1,19 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
-import modal from "../../components/modal/modal";
+import {createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
-    modalData: []
+    ingredientData: [],
+    orderNumber: 0,
+    orderName: ''
 }
 
 const modalSlice = createSlice({
     name: 'modal',
     initialState,
     reducers: {
-        changeData: (state, action) => {
-            state.modalData = action.payload;
+        changeIngredientData: (state, action) => {
+            state.ingredientData = action.payload;
+        },
+        changeOrderData: (state, action) => {
+            state.orderNumber = action.payload.order.number;
+            state.orderName = action.payload.name;
         }
     }
 });
 
-export const { changeData } = modalSlice.actions;
+export const {changeIngredientData, changeOrderData} = modalSlice.actions;
 export default modalSlice.reducer;

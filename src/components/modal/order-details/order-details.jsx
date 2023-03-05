@@ -2,12 +2,12 @@ import styles from './order-details.module.css'
 import {ReactComponent as Done} from '../../../graphics.svg'
 import {useSelector} from "react-redux";
 const OrderDetails = () => {
-    const {modalData: orderInfo} = useSelector(state => state.modal)
+    const {orderNumber, orderName} = useSelector(state => state.modal)
     return (
             <div className={styles.orderModal}>
                 <div className={styles.orderStatus}>
-                    <p className="text text_type_digits-large">{orderInfo.order.number}</p>
-                    <p className="text text_type_main-medium pt-8">{orderInfo.name}</p>
+                    <p className="text text_type_digits-large">{orderNumber}</p>
+                    <p className="text text_type_main-medium pt-8">{orderName}</p>
                     <div className="pt-15 pb-15">
                         <Done />
                     </div>

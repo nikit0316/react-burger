@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import uuid from "react-uuid";
 
 const initialState = {
     cart: [],
@@ -13,15 +14,15 @@ const orderSlice = createSlice({
             if (action.payload.type === 'bun') {
                 if (state.cart[0] !== undefined && state.cart[0].type === 'bun')
                 {
-                    state.cart[0] = action.payload;
+                    state.cart[0] = {...action.payload, key: uuid()};
                     state.cart.pop();
-                    state.cart.push(action.payload);
+                    state.cart.push({...action.payload, key: uuid()});
                 } else {
-                    state.cart.unshift(action.payload);
-                    state.cart.push(action.payload);
+                    state.cart.unshift({...action.payload, key: uuid()});
+                    state.cart.push({...action.payload, key: uuid()});
                 }
             } else {
-                state.cart.splice(1, 0, action.payload)
+                state.cart.splice(1, 0, {...action.payload, key: uuid()})
             }
         },
         deleteIngredient: (state, action) => {

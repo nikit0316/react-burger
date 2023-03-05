@@ -8,7 +8,7 @@ import IngredientDetails from "../../modal/ingredient-details/ingredient-details
 import Modal from "../../modal/modal";
 import {elementPropTypes} from "../../../utils/prop-types";
 import {useDrag} from "react-dnd";
-import {changeData} from "../../../services/reducers/modalSlice";
+import {changeIngredientData} from "../../../services/reducers/modalSlice";
 import {useDispatch} from "react-redux";
 const IngredientCard = (props) => {
     const [ingredientVisible, setIngredientVisible] = useState(false);
@@ -22,7 +22,7 @@ const IngredientCard = (props) => {
         })
     })
     const handleOpenIngredientModal = () => {
-        dispatch(changeData(element))
+        dispatch(changeIngredientData(element))
         setIngredientVisible(true)
     }
     const handleCloseIngredientModal = () => {

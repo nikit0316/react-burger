@@ -13,8 +13,7 @@ import {useDrop} from "react-dnd";
 import {addIngredient, deleteIngredient, reorderIngedients} from "../../services/reducers/orderSlice";
 import {useGetIngredientsQuery, useAddOrderMutation} from "../../services/reducers/ingredientAPI";
 import ConstructorCard from "./constructor-card/constructor-card";
-import {changeData} from "../../services/reducers/modalSlice";
-import uuid from 'react-uuid';
+import {changeOrderData} from "../../services/reducers/modalSlice";
 
 const BurgerConstructor = () => {
     const [orderVisible, setOrderVisible] = useState(false);
@@ -30,7 +29,7 @@ const BurgerConstructor = () => {
             .catch((error) => {
                 throw new Error(error)
             })
-        dispatch(changeData(result))
+        dispatch(changeOrderData(result))
         setOrderVisible(true)
     }
 
@@ -43,7 +42,7 @@ const BurgerConstructor = () => {
                 .reduce((total, ingredient, i) => i === 0 && ingredient.type === 'bun' ? total : total + ingredient.price, 0
             ))
         }
-    },[cart, ingredients, isLoading])
+    },[cart, isLoading, ingredients])
 
     const [{ isOver }, dropRef] = useDrop({
         accept: 'ingredient',
@@ -77,10 +76,9 @@ const BurgerConstructor = () => {
                 {!isLoading && ingredients &&
           <div className={styles.ingredientList + ' custom-scroll' }>
               {cart
-                  .map(ingredient => ingredients.data.find(x => x._id === ingredient._id))
                   .map(((ingredient, i) =>
                       ingredient.type !== 'bun' ?
-          <div key={uuid()}>
+          <div key={ingredient.key}>
             <ConstructorCard
               element={ingredient}
               id={ingredient._id}
@@ -88,7 +86,7 @@ const BurgerConstructor = () => {
               index={i}
               moveCard={moveCard}
             />
-          </div> : <div key={uuid()} className={styles.constructorCard + ' ' + styles.baseElement}>
+          </div> : <div key={ingredient.key} className={styles.constructorCard + ' ' + styles.baseElement}>
                               <ConstructorElement
                                   type={i > 0 ? 'bottom' : 'top'}
                                   isLocked={true}

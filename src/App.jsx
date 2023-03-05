@@ -5,10 +5,13 @@ import BurgerIngredients from './components/burger-ingredients/burger-ingredient
 import BurgerConstructor from "./components/burger-constructor/burger-constructor";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import {Provider} from "react-redux";
+import store from "./services/reducers/store";
 
 
 function App() {
   return (
+      <Provider store={store}>
     <div className="App">
         <DndProvider backend={HTML5Backend}>
         <AppHeader />
@@ -20,6 +23,7 @@ function App() {
       </div>
         </DndProvider>
     </div>
+      </Provider>
   );
 }
 

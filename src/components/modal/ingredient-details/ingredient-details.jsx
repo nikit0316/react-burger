@@ -2,7 +2,7 @@ import styles from './ingredient-details.module.css'
 import {elementPropTypes} from "../../../utils/prop-types";
 import {useSelector} from "react-redux";
 const IngredientDetails = () => {
-    const {modalData: element} = useSelector(state => state.modal)
+    const {ingredientData: element} = useSelector(state => state.modal)
     return (
         <div className={styles.ingredientModal}>
             <div className={styles.ingredientHeader}>
