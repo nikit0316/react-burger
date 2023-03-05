@@ -10,4 +10,6 @@
     flex-direction: column;
     align-content: center;
     flex-wrap: wrap;
+    align-self: center;
+    text-align: center;
 }

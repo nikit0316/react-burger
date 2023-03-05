@@ -5,23 +5,6 @@ const initialState = {
     number: 0
 }
 
-/*export const fetchIngredients = createAsyncThunk(
-    "ingredients/fetchIngredients",
-     async () => {
-            const response = await fetch(`${BURGER_API_URL}/ingredients`);
-            console.log('fetched')
-            if (!response.ok) {
-                console.log('sup')
-                await Promise.reject(response)
-                throw new Error('Ответ сети был не ok.');
-            } else {
-                const json = await response.json();
-                console.log(json)
-                return json.data;
-            }
-    }
-)*/
-
 const orderSlice = createSlice({
     name: 'order',
     initialState,
@@ -50,19 +33,6 @@ const orderSlice = createSlice({
         },
     },
 
-    /*extraReducers: builder => {
-        builder.addCase(fetchIngredients.pending, state => {
-            state.loading = true
-        })
-        builder.addCase(fetchIngredients.fulfilled, (state, action) => {
-            state.data = action.payload
-                state.loading = false
-        })
-        builder.addCase(fetchIngredients.rejected, (state, action) => {
-            state.data = []
-            state.loading = false
-        })
-    }*/
 });
 
 export const { addIngredient, deleteIngredient, reorderIngedients } = orderSlice.actions;

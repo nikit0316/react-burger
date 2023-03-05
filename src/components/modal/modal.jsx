@@ -16,13 +16,13 @@ const Modal = (props) => {
         }
         window.addEventListener('keydown', close)
         return () => window.removeEventListener('keydown', close)
-    },[])
+    },[onClose])
     return ReactDom.createPortal(
         <>
         <ModalOverlay onClose={onClose}>
         </ModalOverlay>
             <div className={styles.modal}>
-                <div className="pt-15 pl-10 pr-10" style={{ display: 'flex', justifyContent: 'space-between'}}>
+                <div className={styles.modalHeader + " pt-15 pl-10 pr-10"}>
                     {header && <p className="text text_type_main-large">{header}</p>}
                     <CloseIcon type="primary" onClick={onClose}/>
                 </div>

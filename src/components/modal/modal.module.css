@@ -8,3 +8,8 @@
     left: calc(50vw - 360px);
     opacity: 100%;
 }
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+}

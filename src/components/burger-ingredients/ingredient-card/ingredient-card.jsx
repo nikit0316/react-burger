@@ -8,8 +8,11 @@ import IngredientDetails from "../../modal/ingredient-details/ingredient-details
 import Modal from "../../modal/modal";
 import {elementPropTypes} from "../../../utils/prop-types";
 import {useDrag} from "react-dnd";
+import {changeData} from "../../../services/reducers/modalSlice";
+import {useDispatch} from "react-redux";
 const IngredientCard = (props) => {
     const [ingredientVisible, setIngredientVisible] = useState(false);
+    const dispatch = useDispatch()
     const element = props.element;
     const [{ isDragging }, dragRef] = useDrag({
         type: 'ingredient',
@@ -19,6 +22,7 @@ const IngredientCard = (props) => {
         })
     })
     const handleOpenIngredientModal = () => {
+        dispatch(changeData(element))
         setIngredientVisible(true)
     }
     const handleCloseIngredientModal = () => {
@@ -27,7 +31,7 @@ const IngredientCard = (props) => {
 
     const ingredientModal = (
         <Modal header='Детали ингридиента' onClose={handleCloseIngredientModal}>
-            <IngredientDetails element={props.element}/>
+            <IngredientDetails/>
         </Modal>
     );
 
@@ -44,7 +48,7 @@ const IngredientCard = (props) => {
         </div>
         <p className="text text_type_main-default">{props.element.name}</p>
       </div>
-            <div style={{overflow: 'hidden'}}>
+            <div>
                 {ingredientVisible && ingredientModal}
             </div>
             </>

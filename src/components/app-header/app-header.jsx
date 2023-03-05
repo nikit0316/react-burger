@@ -15,7 +15,7 @@ const AppHeader = () => {
           <div className="pl-5 pr-2">
             <BurgerIcon type="primary" />
           </div>
-          <a href='../' className="text text_type_main-default pr-5 pt-4 pb-4" style={{textDecoration: 'none', color: '#FFFFFF'}}>
+          <a href='../' className="text text_type_main-default pr-5 pt-4 pb-4">
             Конструктор
           </a>
         </div>
@@ -23,7 +23,7 @@ const AppHeader = () => {
           <div className="pl-5 pr-2">
             <ListIcon type="secondary" />
           </div>
-          <a href='../' className="text text_type_main-default text_color_inactive pr-5 pt-4 pb-4" style={{textDecoration: 'none'}}>
+          <a href='../' className="text text_type_main-default text_color_inactive pr-5 pt-4 pb-4">
             Лента заказов
           </a>
         </div>
@@ -35,7 +35,7 @@ const AppHeader = () => {
         <div className="pl-5 pr-2">
           <ProfileIcon type="secondary" />
         </div>
-        <a href='../' className="text text_type_main-default text_color_inactive pr-5 pt-4 pb-4" style={{textDecoration: 'none'}}>
+        <a href='../' className="text text_type_main-default text_color_inactive pr-5 pt-4 pb-4">
           Личный кабинет
         </a>
       </div>
