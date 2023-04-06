@@ -1,29 +1,29 @@
 import styles from './ingredient-details.module.css'
-import {useEffect} from "react";
-import PropTypes from "prop-types";
 import {elementPropTypes} from "../../../utils/prop-types";
-const IngredientDetails = (props) => {
+import {useSelector} from "react-redux";
+const IngredientDetails = () => {
+    const {ingredientData: element} = useSelector(state => state.modal)
     return (
         <div className={styles.ingredientModal}>
             <div className={styles.ingredientHeader}>
-                <img src={props.element.image_large} alt="oops"></img>
-                <p className="text text_type_main-medium pt-4" style={{textAlign: 'center'}}>{props.element.name}</p>
+                <img src={element.image_large} alt="oops"></img>
+                <p className="text text_type_main-medium pt-4">{element.name}</p>
                 <div className={styles.ingredientNutrition}>
                     <div>
                         <p className="text text_type_main-default text_color_inactive">Калории, ккал</p>
-                        <p className="text text_type_digits-default text_color_inactive" style={{textAlign: 'center'}}>{props.element.calories}</p>
+                        <p className="text text_type_digits-default text_color_inactive">{element.calories}</p>
                     </div>
                     <div>
                         <p className="text text_type_main-default text_color_inactive">Белки</p>
-                        <p className="text text_type_digits-default text_color_inactive" style={{textAlign: 'center'}}>{props.element.proteins}</p>
+                        <p className="text text_type_digits-default text_color_inactive">{element.proteins}</p>
                     </div>
                     <div>
                         <p className="text text_type_main-default text_color_inactive">Жиры</p>
-                        <p className="text text_type_digits-default text_color_inactive" style={{textAlign: 'center'}}>{props.element.fat}</p>
+                        <p className="text text_type_digits-default text_color_inactive">{element.fat}</p>
                     </div>
                     <div>
                         <p className="text text_type_main-default text_color_inactive">Углеводы</p>
-                        <p className="text text_type_digits-default text_color_inactive" style={{textAlign: 'center'}}>{props.element.carbohydrates}</p>
+                        <p className="text text_type_digits-default text_color_inactive">{element.carbohydrates}</p>
                     </div>
                 </div>
             </div>

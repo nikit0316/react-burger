@@ -1,138 +1,121 @@
-import React, {useContext, useEffect, useReducer, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import styles from './burger-construcor.module.css'
 import {
     Button,
-    ConstructorElement, DragIcon
+    ConstructorElement
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import "simplebar-react/dist/simplebar.min.css";
 import {ReactComponent as Currency} from '../../Subtract.svg'
 import OrderDetails from "../modal/order-details/order-details";
-import PropTypes from "prop-types";
 import Modal from "../modal/modal";
-import {elementPropTypes} from "../../utils/prop-types";
-import {BurgerContext} from "../../services/burger-context";
-import {BURGER_API_URL} from "../../utils/data";
+import {useDispatch, useSelector} from "react-redux";
+import {useDrop} from "react-dnd";
+import {addIngredient, deleteIngredient, reorderIngedients} from "../../services/reducers/orderSlice";
+import {useGetIngredientsQuery, useAddOrderMutation} from "../../services/reducers/ingredientAPI";
+import ConstructorCard from "./constructor-card/constructor-card";
+import {changeOrderData} from "../../services/reducers/modalSlice";
 
-const ingredientsInitialState = {
-    ingredients: [],
-    sum: 2510
-}
-function reducer(state, action) {
-    switch (action.type) {
-        case "add":
-            return {
-                ingredients: [...state.ingredients, action.payload],
-                sum: state.sum + action.payload.price
-            };
-        case "reset":
-            return ingredientsInitialState;
-        default:
-            throw new Error(`Wrong type of action: ${action.type}`);
-    }
-}
 const BurgerConstructor = () => {
     const [orderVisible, setOrderVisible] = useState(false);
-    const [orderInfo, setOrderInfo] = useState();
-    const [ingredientsState, ingredientsDispatcher] = useReducer(reducer, ingredientsInitialState, undefined)
-    const {data} = useContext(BurgerContext)
-    const handleOpenOrderModal = () => {
-        postData(`${BURGER_API_URL}/orders`, {ingredients: ingredientsState.ingredients.map((ingredient) => ingredient._id)})
+    const [sum, setSum] = useState(0);
+    const dispatch = useDispatch();
+    const { cart } = useSelector(state => state.order)
+    const [addNewOrder] = useAddOrderMutation();
 
+    const handleOpenOrderModal = async () => {
+        // postData(`${BURGER_API_URL}/orders`, {ingredients: ingredientsState.ingredients.map((ingredient) => ingredient._id)})
+        const result = await addNewOrder({ingredients: cart.map(ingredient => ingredient._id)})
+            .unwrap()
+            .catch((error) => {
+                throw new Error(error)
+            })
+        dispatch(changeOrderData(result))
+        setOrderVisible(true)
     }
 
-    async function postData(url = '', data = {}) {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        if (!response.ok) {
-            await Promise.reject(response)
-            throw new Error('Ответ сети был не ok.');
-        } else {
-            const json = await response.json();
-            const jsonData = json;
-            setOrderInfo(jsonData);
+    const {data: ingredients, isLoading} = useGetIngredientsQuery('');
+
+    useEffect(() => {
+        if (ingredients && !isLoading) {
+            setSum(cart
+                .map(ingredient => ingredients.data.find(x => x._id === ingredient._id))
+                .reduce((total, ingredient, i) => i === 0 && ingredient.type === 'bun' ? total : total + ingredient.price, 0
+            ))
         }
-    }
+    },[cart, isLoading, ingredients])
+
+    const [{ isOver }, dropRef] = useDrop({
+        accept: 'ingredient',
+        drop: (item) => dispatch(addIngredient(item.element)),
+        collect: (monitor) => ({
+            isOver: monitor.isOver()
+        })
+    })
     const handleCloseOrderModal = () => {
         setOrderVisible(false)
     }
-    const getRandomIngredient = () => {
-        const number = Math.floor(Math.random() * 15)
-        const ingredient = data[number];
-        if (ingredient.type === 'bun'){
-            return getRandomIngredient();
-        }
-        else return ingredient;
+
+    const deletesIngredient = (id) => {
+        dispatch(deleteIngredient(id))
     }
-
-    const bun = data[0];
-
-    useEffect(() => {
-        ingredientsDispatcher({type: 'add', payload: bun})
-        for (let i = 0; i < 3; i++)
-        {
-            ingredientsDispatcher({type: 'add', payload: getRandomIngredient()})
-        }
-        ingredientsDispatcher({type: 'add', payload: bun})
-        return () => ingredientsDispatcher({type: 'reset'})
-    },[bun])
-
-    useEffect(() => {
-        if (orderInfo !== undefined) {
-            setOrderVisible(true)
-        }
-    },[orderInfo])
 
     const orderModal = (
         <Modal onClose={handleCloseOrderModal}>
-                <OrderDetails orderInfo={orderInfo}/>
+                <OrderDetails/>
         </Modal>
     );
 
+    const moveCard = useCallback((dragIndex, hoverIndex) => {
+        dispatch(reorderIngedients({dragIndex, hoverIndex}))
+    }, [cart])
+
     return (
-      <div style={{ display: "flex", flexDirection: "column", maxHeight: '800px' }}>
-          <div>
-              {ingredientsState.ingredients.map(((ingredient, i) =>
+        <>
+            <div className={styles.constructorContainer} style={{ display: "flex", flexDirection: "column", maxHeight: '800px' }} ref={dropRef}>
+                {isOver && <div>Кидай сюда</div>}
+                {!isLoading && ingredients &&
+          <div className={styles.ingredientList + ' custom-scroll' }>
+              {cart
+                  .map(((ingredient, i) =>
                       ingredient.type !== 'bun' ?
-          <div className={styles.constructorCard} key={ingredient._id + i}>
-            <DragIcon />
-            <ConstructorElement
-              text={ingredient.name}
-              price={ingredient.price}
-              thumbnail={ingredient.image}
+          <div key={ingredient.key}>
+            <ConstructorCard
+              element={ingredient}
+              id={ingredient._id}
+              handleClose={(e) => deletesIngredient(ingredient._id, e)}
+              index={i}
+              moveCard={moveCard}
             />
-          </div> : <div key={ingredient._id + i} className={styles.constructorCard + ' ' + styles.baseElement}>
+          </div> : <div key={ingredient.key} className={styles.constructorCard + ' ' + styles.baseElement}>
                               <ConstructorElement
                                   type={i > 0 ? 'bottom' : 'top'}
                                   isLocked={true}
-                                  text={bun.name + ' (верх)'}
-                                  price={bun.price}
-                                  thumbnail={bun.image}
+                                  text={ingredient.name + (i <= 0 ? '(верх)' : '(низ)')}
+                                  price={ingredient.price}
+                                  thumbnail={ingredient.image}
                               />
                           </div>
               ))}
           </div>
-          <div className={styles.constructorOrder} style={{alignSelf: "flex-end"}}>
-              <p className="text text_type_digits-medium" style={{alignSelf: "center"}}>{ingredientsState.sum}</p>
-              <div className="pl-2 pr-10" style={{alignSelf: 'center'}}>
+            }
+          <div className={styles.constructorOrder}>
+              <p className="text text_type_digits-medium">{sum}</p>
+              <div className="pl-2 pr-10">
                   <Currency />
               </div>
               <Button htmlType="button" type="primary" size="large" onClick={handleOpenOrderModal}>
                   Создать заказ
               </Button>
-              <div style={{overflow: 'hidden'}}>
+              <div>
                   {orderVisible && orderModal}
               </div>
           </div>
       </div>
+                </>
     );
 }
 
-BurgerConstructor.propTypes = {
-    data: PropTypes.arrayOf(elementPropTypes).isRequired
-}
+// BurgerConstructor.propTypes = {
+//     data: PropTypes.arrayOf(elementPropTypes).isRequired
+// }
 export default BurgerConstructor;

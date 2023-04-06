@@ -1,0 +1,11 @@
+.constructorCard {
+    display: flex;
+    flex-direction: row;
+    padding-top: 16px;
+    align-items: center;
+    max-height: 80px;
+}
+
+.constructorCard > svg {
+    margin-right: 8px;
+}

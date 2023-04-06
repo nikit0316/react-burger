@@ -3,32 +3,42 @@ import {
   CurrencyIcon,
   Counter
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import IngredientDetails from "../../modal/ingredient-details/ingredient-details";
-import PropTypes from "prop-types";
 import Modal from "../../modal/modal";
 import {elementPropTypes} from "../../../utils/prop-types";
+import {useDrag} from "react-dnd";
+import {changeIngredientData} from "../../../services/reducers/modalSlice";
+import {useDispatch} from "react-redux";
 const IngredientCard = (props) => {
     const [ingredientVisible, setIngredientVisible] = useState(false);
-
+    const dispatch = useDispatch()
+    const element = props.element;
+    const [{ isDragging }, dragRef] = useDrag({
+        type: 'ingredient',
+        item: { element },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging()
+        })
+    })
     const handleOpenIngredientModal = () => {
+        dispatch(changeIngredientData(element))
         setIngredientVisible(true)
     }
     const handleCloseIngredientModal = () => {
         setIngredientVisible(false)
     }
 
-
     const ingredientModal = (
         <Modal header='Детали ингридиента' onClose={handleCloseIngredientModal}>
-            <IngredientDetails element={props.element}/>
+            <IngredientDetails/>
         </Modal>
     );
 
     return (
         <>
-      <div className={styles.ingredientCard} onClick={handleOpenIngredientModal}>
-        <Counter />
+      <div className={styles.ingredientCard} onClick={handleOpenIngredientModal} ref={dragRef}>
+        <Counter count={props.count}/>
         <img src={props.element.image} alt="oops" ></img>
         <div className={styles.price}>
           <p className="text text_type_main-large pt-1 pb-1 pr-2">
@@ -38,7 +48,7 @@ const IngredientCard = (props) => {
         </div>
         <p className="text text_type_main-default">{props.element.name}</p>
       </div>
-            <div style={{overflow: 'hidden'}}>
+            <div>
                 {ingredientVisible && ingredientModal}
             </div>
             </>

@@ -1,59 +1,78 @@
-import React, {useContext, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from "./burger-ingredients.module.css";
 import "simplebar-react/dist/simplebar.min.css";
-import PropTypes from "prop-types"
+import { useGetIngredientsQuery } from "../../services/reducers/ingredientAPI";
+
 import {
   Tab
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientCard from './ingredient-card/ingredient-card';
-import {elementPropTypes} from "../../utils/prop-types";
-import {BurgerContext} from "../../services/burger-context";
+import {useSelector} from "react-redux";
+import uuid from "react-uuid";
 const BurgerIngredients = () => {
-    const [current, setCurrent] = useState("bun");
-    const {data} = useContext(BurgerContext)
+    const [tabValue, setTabValue] = useState('bun')
+    const {data: ingredients,isLoading} = useGetIngredientsQuery('');
+    const { cart } = useSelector(state => state.order)
+
+    useEffect(() => {
+        if (!isLoading) {
+            const box = document.querySelector('.custom-scroll');
+            box.addEventListener("scroll", event => {
+                if (box.scrollTop > 300 && box.scrollTop < 810 && tabValue !== 'sauce') {
+                    setTabValue('sauce')
+                }
+                else if (box.scrollTop > 810 && tabValue !== 'main') {
+                    setTabValue('main')
+                } else if (tabValue !== 'bun'){
+                    setTabValue('bun')
+                }
+            })
+        }
+    },[isLoading, tabValue])
 
     return (
-      <div>
+        <>
+            {isLoading && <div>Loading...</div>}
+            {!isLoading && ingredients &&
+            <div>
         <p className="text text_type_main-large pt-10 pb-5">Соберите бургер</p>
         <div className={styles.tab}>
-          <Tab value="bun" active={current === "bun"} onClick={setCurrent}>
+          <Tab value="bun" active={tabValue === "bun"}>
             Булки
           </Tab>
-          <Tab value="sauce" active={current === "sauce"} onClick={setCurrent}>
+          <Tab value="sauce" active={tabValue === "sauce"}>
             Соусы
           </Tab>
-          <Tab value="main" active={current === "main"} onClick={setCurrent}>
+          <Tab value="main" active={tabValue === "main"}>
             Начинки
           </Tab>
         </div>
         <div className={styles.listIngredients + ' custom-scroll'}>
             <p className="text text_type_main-medium pt-10">Булки</p>
             <div className={styles.ingredients}>
-              {data.map((element) => {
+              {ingredients.data.map((element) => {
                 if (element.type === "bun")
-                  return <IngredientCard key={element._id} element={element} />;
+                  return <IngredientCard key={uuid()} element={element} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
             <p className="text text_type_main-medium">Соусы</p>
             <div className={styles.ingredients}>
-              {data.map((element) => {
+              {ingredients.data.map((element) => {
                 if (element.type === "sauce")
-                  return <IngredientCard key={element._id} element={element} />;
+                  return <IngredientCard key={uuid()} element={element} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
             <p className="text text_type_main-medium">Начинки</p>
             <div className={styles.ingredients}>
-              {data.map((element) => {
+              {ingredients.data.map((element) => {
                 if (element.type === "main")
-                  return <IngredientCard key={element._id} element={element} />;
+                  return <IngredientCard key={uuid()} element={element} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
         </div>
       </div>
+            }
+        </>
     );
-}
-
-BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(elementPropTypes).isRequired
 }
 export default BurgerIngredients
