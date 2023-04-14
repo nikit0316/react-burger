@@ -1,0 +1,22 @@
+.form-container {
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+
+
+input {
+    width: 480px;
+    height: 64px;
+
+    background: #2F2F37;
+
+    border: 2px dashed #4C4CFF;
+    border-radius: 40px;
+}
