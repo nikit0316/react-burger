@@ -10,10 +10,13 @@ import {elementPropTypes} from "../../../utils/prop-types";
 import {useDrag} from "react-dnd";
 import {changeIngredientData} from "../../../services/reducers/modalSlice";
 import {useDispatch} from "react-redux";
+import {useNavigate} from "react-router-dom";
 const IngredientCard = (props) => {
     const [ingredientVisible, setIngredientVisible] = useState(false);
     const dispatch = useDispatch()
     const element = props.element;
+    const id = props.id;
+    const navigate = useNavigate();
     const [{ isDragging }, dragRef] = useDrag({
         type: 'ingredient',
         item: { element },
@@ -37,17 +40,17 @@ const IngredientCard = (props) => {
 
     return (
         <>
-      <div className={styles.ingredientCard} onClick={handleOpenIngredientModal} ref={dragRef}>
-        <Counter count={props.count}/>
-        <img src={props.element.image} alt="oops" ></img>
-        <div className={styles.price}>
-          <p className="text text_type_main-large pt-1 pb-1 pr-2">
-            {props.element.price}
-          </p>
-          <CurrencyIcon />
-        </div>
-        <p className="text text_type_main-default">{props.element.name}</p>
-      </div>
+          <div className={styles.ingredientCard} onClick={handleOpenIngredientModal} ref={dragRef}>
+            <Counter count={props.count}/>
+            <img src={props.element.image} alt="oops" ></img>
+            <div className={styles.price}>
+              <p className="text text_type_main-large pt-1 pb-1 pr-2">
+                {props.element.price}
+              </p>
+              <CurrencyIcon />
+            </div>
+            <p className="text text_type_main-default">{props.element.name}</p>
+          </div>
             <div>
                 {ingredientVisible && ingredientModal}
             </div>

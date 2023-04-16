@@ -7,11 +7,22 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./app-header.module.css";
 import { useNavigate } from 'react-router-dom';
+import {useAuth} from "../../utils/auth";
+import {getCookie} from "../../utils/utils";
 const AppHeader = () => {
 
   const navigate = useNavigate();
-  const change = () => {
-    navigate('/login');
+  let auth = useAuth();
+
+  const toLogin = () => {
+    if (getCookie('token')) {
+      navigate("/profile")
+    } else {
+      if (getCookie('refreshToken')) {
+        auth.refreshAccessToken()
+            .then(data => data['success'] ? navigate('/profile') : navigate('/login'))
+      }
+    }
   }
   return (
     <header className={styles.header}>
@@ -36,7 +47,7 @@ const AppHeader = () => {
       <div className={styles.logo}>
         <Logo />
       </div>
-      <div onClick={change} className={styles.menuItem}>
+      <div onClick={toLogin} className={styles.menuItem}>
         <div className="pl-5 pr-2">
           <ProfileIcon type="secondary" />
         </div>
