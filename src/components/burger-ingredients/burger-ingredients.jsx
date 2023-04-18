@@ -9,6 +9,7 @@ import {
 import IngredientCard from './ingredient-card/ingredient-card';
 import {useSelector} from "react-redux";
 import uuid from "react-uuid";
+import {Link} from "react-router-dom";
 const BurgerIngredients = () => {
     const [tabValue, setTabValue] = useState('bun')
     const {data: ingredients,isLoading} = useGetIngredientsQuery('');
@@ -52,21 +53,21 @@ const BurgerIngredients = () => {
             <div className={styles.ingredients}>
               {ingredients.data.map((element) => {
                 if (element.type === "bun")
-                  return <IngredientCard key={uuid()} element={element} count={cart.filter(x => x._id === element._id).length} />;
+                  return <IngredientCard key={uuid()} element={element} id={element._id} count={cart.filter(x => x._id === element._id).length} />
               })}
             </div>
             <p className="text text_type_main-medium">Соусы</p>
             <div className={styles.ingredients}>
               {ingredients.data.map((element) => {
                 if (element.type === "sauce")
-                  return <IngredientCard key={uuid()} element={element} count={cart.filter(x => x._id === element._id).length} />;
+                  return <IngredientCard key={uuid()} element={element} id={element._id} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
             <p className="text text_type_main-medium">Начинки</p>
             <div className={styles.ingredients}>
               {ingredients.data.map((element) => {
                 if (element.type === "main")
-                  return <IngredientCard key={uuid()} element={element} count={cart.filter(x => x._id === element._id).length} />;
+                  return <IngredientCard key={uuid()} element={element} id={element._id} count={cart.filter(x => x._id === element._id).length} />;
               })}
             </div>
         </div>
