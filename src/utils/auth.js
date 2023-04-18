@@ -1,5 +1,5 @@
 import { useContext, useState, createContext } from 'react';
-import { deleteCookie, setCookie } from './utils';
+import {deleteCookie, getCookie, setCookie} from './utils';
 import React from 'react';
 import {loginRequest, getUserRequest, logoutRequest, registerRequest, getAccesstoken} from './api';
 
@@ -57,7 +57,7 @@ export function useProvideAuth() {
                 let authToken = data['accessToken'].split('Bearer ')[1];
                 let refreshToken = data['refreshToken'];
                 if (authToken) {
-                    setCookie('token', authToken, {expires: 12});
+                    setCookie('token', authToken, {expires: 1200});
                     setCookie('refreshToken', refreshToken);
                 }
                 return data;

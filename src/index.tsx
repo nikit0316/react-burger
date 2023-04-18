@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import {ProvideAuth} from "./utils/auth";
+import {BrowserRouter} from 'react-router-dom'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
@@ -11,9 +13,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-      <Provider store={store}>
+          <BrowserRouter>
+          <Provider store={store}>
             <App />
-      </Provider>
+            </Provider>
+          </BrowserRouter>
   </React.StrictMode>
 );
 

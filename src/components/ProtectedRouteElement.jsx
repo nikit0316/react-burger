@@ -9,8 +9,6 @@ export const ProtectedRouteElement = ({ element }) => {
 
     const init = async () => {
         await getUser()
-            .then(data => setUser({ ...data.user, id: data.user._id }))
-            .then(data => console.log(data))
             .then(() => setUserLoaded(true))
     };
 
